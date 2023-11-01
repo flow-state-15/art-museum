@@ -24,7 +24,7 @@ export default function GalleryView({ galleries }) {
 
   return (
     <div>
-      <h2>name: {data.name}</h2>
+      <h2>{data.name}</h2>
       <h3>gallery theme: {data.theme || "No gallery theme."}</h3>
       <p>{data.labeltext}</p>
       <GalleryArt art={data.objects} />

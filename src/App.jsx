@@ -9,19 +9,50 @@ import {
 import { galleryLoader, homeLoader, exhibitLoader } from "./router/loaders.js";
 import Layout from "./router/Layout";
 import GalleryView from "./components/GalleryView";
-import GalleryNavigation from "./components/GalleryNavigation";
 import harvardArtData from "./data/harvardArt.js";
 import ErrorBoundary from "./router/ErrorBoundary";
 import GalleryIndex from "./components/GalleryIndex";
 import Route404 from "./components/Route404";
 import Home from "./components/Home";
-import Footer from "./components/Footer";
 import ArtImageTile from "./components/ArtImageTile";
+
+
+// below is syntax for creating routes from elements
+// this is more familiar to legacy React Router devs
+const routeObjects = createRoutesFromElements(
+  <Route element={<Layout />} errorElement={<ErrorBoundary />}>
+    <Route path={"/"} element={<Home />} loader={homeLoader} />
+    <Route path={"/galleries"} element={<GalleryIndex />}>
+      <Route
+        path={":galleryId"}
+        element={<GalleryView galleries={harvardArtData.records} />}
+        loader={galleryLoader}
+        >
+        <Route
+          path={":exhibitId"}
+          element={<ArtImageTile />}
+          loader={exhibitLoader}
+          />
+      </Route>
+      <Route path={"*"} element={<Route404 />} />
+    </Route>
+  </Route>
+);
+
+
+export default function App() {
+  return (
+    <>
+      <span>i&apos;m outside the router so I cannot use links</span>
+      <RouterProvider router={createBrowserRouter(routeObjects)} />
+    </>
+  );
+}
 
 // below is syntax for creating plain route objects
 // const router = createBrowserRouter([
 //   {
-//     // element: <Layout />,
+//     element: <Layout />,
 //     errorElement: <ErrorBoundary />,
 //     children: [
 //       {
@@ -71,37 +102,6 @@ import ArtImageTile from "./components/ArtImageTile";
 //   },
 // ]);
 
-// below is syntax for creating routes from elements
-// this is more familiar to legacy React Router devs
-const routeObjects = createRoutesFromElements(
-  <Route element={<Layout />} errorElement={<ErrorBoundary />}>
-    <Route path={"/"} element={<Home />} loader={homeLoader} />
-    <Route path={"/galleries"} element={<GalleryIndex />}>
-      <Route
-        path={":galleryId"}
-        element={<GalleryView galleries={harvardArtData.records} />}
-        loader={galleryLoader}
-      >
-        <Route
-          path={":exhibitId"}
-          element={<ArtImageTile />}
-          loader={exhibitLoader}
-        ></Route>
-      </Route>
-      <Route path={"*"} element={<Route404 />} />
-    </Route>
-  </Route>
-);
-
 // export default function App() {
 //   return <RouterProvider router={router} />;
 // }
-
-export default function App() {
-  return (
-    <>
-      <span>i&apos;m outside the router so I cannot use links</span>
-      <RouterProvider router={createBrowserRouter(routeObjects)} />
-    </>
-  );
-}
